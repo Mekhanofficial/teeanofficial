@@ -18,8 +18,7 @@ import {
   SiGit,
   SiInstagram,
 } from "react-icons/si";
-import Image from "next/image"; 
-
+import Image from "next/image";
 
 export default function Hero() {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,18 +64,6 @@ export default function Hero() {
     "MEDIA SPECIALIST",
   ];
 
-
-  // Cleanup function for effects
-  useEffect(() => {
-    const cleanup = () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-      musicRef.current?.pause();
-    };
-
-    return cleanup;
-  }, []);
-
   const handleScroll = () => {
     setScrolled(window.scrollY > 50);
   };
@@ -91,7 +78,19 @@ export default function Hero() {
     }
   };
 
-  // Typing effect
+  useEffect(() => {
+    const cleanup = () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mouseleave", handleMouseLeave);
+      musicRef.current?.pause();
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    document.addEventListener("mouseleave", handleMouseLeave);
+
+    return cleanup;
+  }, [handleMouseLeave]);
+
   useEffect(() => {
     setMounted(true);
     let charIndex = 0;
@@ -109,9 +108,8 @@ export default function Hero() {
     }, 100);
 
     return () => clearInterval(typingInterval);
-  }, [currentRoleIndex]);
+  }, [currentRoleIndex, roles]);
 
-  // Audio effects initialization
   useEffect(() => {
     const initAudio = async () => {
       try {
@@ -129,7 +127,6 @@ export default function Hero() {
     initAudio();
   }, []);
 
-  // Background music initialization
   useEffect(() => {
     const initMusic = async () => {
       try {
@@ -185,7 +182,6 @@ export default function Hero() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-zinc-100 dark:bg-zinc-900 transition-colors duration-500">
-      {/* Music toggle button */}
       <button
         onClick={toggleMusic}
         className={`fixed bottom-4 right-4 z-50 p-3 rounded-full transition-all duration-300 ${
@@ -203,14 +199,12 @@ export default function Hero() {
       </button>
 
       <div className="relative w-full h-full pt-16 md:pt-20">
-        {/* Left Panel - Empty */}
         <div
           className={`absolute top-0 left-0 h-full w-1/2 bg-zinc-200/90 dark:bg-zinc-900/90 z-20 transition-transform duration-700 ease-in-out ${
             isOpen ? "-translate-x-full" : "translate-x-0"
           }`}
         />
 
-        {/* Right Panel - Animated Title */}
         <div
           className={`absolute top-0 right-0 h-full w-1/2 bg-zinc-200/90 dark:bg-zinc-900/90 flex items-center justify-start pl-6 md:pl-10 z-20 transition-transform duration-700 ease-in-out ${
             isOpen ? "translate-x-full" : "translate-x-0"
@@ -222,7 +216,6 @@ export default function Hero() {
           </h2>
         </div>
 
-        {/* Divider Line */}
         <div
           className={`absolute bottom-8 left-1/2 h-[calc(100%-8rem)] w-0.5 bg-gradient-to-t from-zinc-400/50 to-transparent dark:from-zinc-600/50 dark:to-transparent z-30 transition-opacity duration-500 ${
             isOpen ? "opacity-0" : "opacity-100"
@@ -230,7 +223,6 @@ export default function Hero() {
           style={{ transform: "translateX(-50%)" }}
         />
 
-        {/* Main Content */}
         <div
           ref={contentRef}
           className={`absolute top-0 inset-x-0 h-full flex items-center justify-center z-10 transition-opacity duration-700 delay-300 ${
@@ -239,28 +231,21 @@ export default function Hero() {
         >
           <div className="relative w-full max-w-6xl px-4 sm:px-6 md:px-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
-              {/* Image Section - Left Side */}
               <div className="flex justify-center lg:justify-start">
-                <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full  overflow-hidden border-4 ">
+                <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full overflow-hidden border-4">
                   <div className="w-full h-full flex items-center justify-center">
-                  <Image 
-                      src="/images/teebaby.jpg" // Make sure this matches your file name exactly (including extension)
+                    <Image
+                      src="/images/teebaby.jpg"
                       alt="Profile picture"
-                      width={256} 
+                      width={256}
                       height={256}
                       className="object-cover w-full h-full"
                       priority
                     />
-                  </div>                  
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="text-white text-sm font-medium bg-black/50 px-3 py-1 rounded-full">
-                      View Profile
-                    </span>
                   </div>
                 </div>
               </div>
 
-              {/* About Me Content - Right Side */}
               <div className="space-y-4 md:space-y-6">
                 <div className="flex justify-between items-start">
                   <div>
@@ -271,7 +256,6 @@ export default function Hero() {
                       Writer|Radio Rebel|Media Creative
                     </h2>
                   </div>
-                  {/* Close button - Top right */}
                   <button
                     onClick={handleClose}
                     className="p-2 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors duration-300"
@@ -283,7 +267,7 @@ export default function Hero() {
 
                 <div className="space-y-4">
                   <p className="text-base md:text-lg text-zinc-700 dark:text-zinc-300">
-                    I'm a passionate media professional with expertise in
+                    I&apos;m a passionate media professional with expertise in
                     creative writing, radio broadcasting, and digital content
                     creation. With a distinctive voice and compelling
                     storytelling ability, I craft engaging narratives across
@@ -296,17 +280,11 @@ export default function Hero() {
                     diverse audiences and drives meaningful engagement.
                   </p>
                 </div>
-
-              
-
-              
-                
               </div>
             </div>
           </div>
         </div>
 
-        {/* Reveal Button */}
         <button
           ref={buttonRef}
           onClick={handleButtonClick}
