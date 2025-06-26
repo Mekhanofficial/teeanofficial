@@ -93,22 +93,31 @@ export default function Hero() {
 
   useEffect(() => {
     setMounted(true);
-    let charIndex = 0;
-    let currentRole = roles[currentRoleIndex];
-    const typingInterval = setInterval(() => {
-      if (charIndex <= currentRole.length) {
-        setTypingText(currentRole.substring(0, charIndex));
-        charIndex++;
-      } else {
-        clearInterval(typingInterval);
-        setTimeout(() => {
-          setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
-        }, 2000);
-      }
-    }, 100);
+  }, []);
 
-    return () => clearInterval(typingInterval);
-  }, [currentRoleIndex, roles]);
+  // ✅ Fixed Typing Effect Logic
+  useEffect(() => {
+    let isCancelled = false;
+
+    const typeRole = async () => {
+      const role = roles[currentRoleIndex];
+      for (let i = 0; i <= role.length; i++) {
+        if (isCancelled) return;
+        setTypingText(role.substring(0, i));
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (!isCancelled) {
+        setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
+      }
+    };
+
+    typeRole();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [currentRoleIndex]);
 
   useEffect(() => {
     const initAudio = async () => {
@@ -253,7 +262,7 @@ export default function Hero() {
                       About Me
                     </h1>
                     <h2 className="text-xl md:text-2xl font-medium text-blue-600 dark:text-blue-400">
-                      Writer|Radio Rebel|Media Creative
+                      Writer | Radio Rebel | Media Creative
                     </h2>
                   </div>
                   <button
